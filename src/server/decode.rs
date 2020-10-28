@@ -136,6 +136,28 @@ where
     Ok(Some(req))
 }
 
+// TODO: Ad-hoc re-addition begin...
+//
+// Replace this with what was done in:
+//
+// https://github.com/http-rs/async-h1/commit/4c29727106c43f956c64cc9786c7ca4edc8e9c30#diff-ffb8c43ba0f497a41a5fa9d95f6b3e55ff0645243a718cd010100a9f11530f60
+//
+// but looks like that requires IO to implement Copy/Clone
+const EXPECT_HEADER_VALUE: &str = "100-continue";
+const EXPECT_RESPONSE: &[u8] = b"HTTP/1.1 100 Continue\r\n\r\n";
+
+async fn handle_100_continue<IO>(req: &Request, io: &mut IO) -> http_types::Result<()>
+where
+    IO: Write + Unpin,
+{
+    if let Some(EXPECT_HEADER_VALUE) = req.header(EXPECT).map(|h| h.as_str()) {
+        io.write_all(EXPECT_RESPONSE).await?;
+    }
+
+    Ok(())
+}
+// TODO: ...addition end
+
 /// Decode an HTTP request on the server.
 pub(crate) async fn decode_with_bufread<IO>(io: IO) -> http_types::Result<Option<(Request, BodyType)>>
 where
