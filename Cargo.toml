@@ -33,4 +33,4 @@ async-dup = "1.2.1"
 async-channel = "1.5.1"
 
 [patch.crates-io]
-http-types = { git = "https://github.com/ttiurani/http-types.git", rev = "a6377e219a7a1b86be814cd4e299293a2d9aca90" }
+http-types = { git = "https://github.com/ttiurani/http-types.git", rev = "4be6cedc445976df2880b865548b729a756e705f" }
